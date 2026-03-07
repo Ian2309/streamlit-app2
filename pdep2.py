@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Ian Web App")
+st.title("My Streamlit Web App")
 
 name = st.text_input("Enter your name")
 
