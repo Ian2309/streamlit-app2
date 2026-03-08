@@ -1,13 +1,13 @@
-Project Title: Streamlit Web App
+This is the breakdown of Streamlit API Documentation used in my WEBAPP
 
-Description:
-This project is a simple web application built using Python and Streamlit.
-
-Features:
-- User input
-- Interactive interface
-- Web deployment using Streamlit Cloud
-- Test Commit number 2
-
-Author:
-Christian Hebres
+| Function                 | Purpose                         |
+| ------------------------ | ------------------------------- |
+| `st.title()`             | Main title of the app           |
+| `st.write()`             | Display text or data            |
+| `st.sidebar.header()`    | Sidebar section header          |
+| `st.sidebar.selectbox()` | Dropdown selection in sidebar   |
+| `st.subheader()`         | Section heading                 |
+| `st.line_chart()`        | Line chart visualization        |
+| `st.dataframe()`         | Interactive data table          |
+| `st.markdown()`          | Text with Markdown/HTML styling |
+| `st.caption()`           | Small footnote text             |
