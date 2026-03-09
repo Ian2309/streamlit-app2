@@ -11,3 +11,5 @@ This is the breakdown of Streamlit API Documentation used in my WEBAPP
 | `st.dataframe()`         | Interactive data table          |
 | `st.markdown()`          | Text with Markdown/HTML styling |
 | `st.caption()`           | Small footnote text             |
+
+Testing Commits for Github
