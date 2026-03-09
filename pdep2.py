@@ -7,7 +7,7 @@ st.write("This Web-App shows percentage usage of major Linux distributions from 
 
 # --- Sidebar: About Section ---
 st.sidebar.header("About")
-with st.sidebar.expander("Click here to know about this app"):
+with st.sidebar.expander("sClick here to know about this app"):
     st.markdown("""
     **What is the Web-App about?**  
     This app visualizes the **usage trends of major Linux distributions** from 2000 to 2026.  
@@ -124,4 +124,4 @@ st.markdown("""
 
 # --- Other UI components for demonstration ---
 st.caption("!Data is estimated for educational purposes only.!")
-st.caption("Christian Hebres - 2026")
+st.caption("Christian Hebres - (c)2026")
