@@ -1,13 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-# --- Title ---
 st.title("Linux Distribution Usage Trends (2000–2026)")
 st.write("This Web-App shows percentage usage of major Linux distributions from 2000 to 2026")
 
-# --- Sidebar: About Section ---
 st.sidebar.header("About")
-with st.sidebar.expander("sClick here to know about this app"):
+with st.sidebar.expander("Click here to know about this app"):
     st.markdown("""
     **What is the Web-App about?**  
     This app visualizes the **usage trends of major Linux distributions** from 2000 to 2026.  
@@ -47,13 +45,11 @@ df_display.index = df_display.index.astype(str)
 # --- Sidebar: Inputs ---
 st.sidebar.header("Filter Options")
 
-# 1. Select Linux distribution
 distro = st.sidebar.selectbox(
     "Select Linux Distribution",
     ["All", "Ubuntu", "Debian", "Fedora", "Arch", "Linux Mint"]
 )
 
-# 2. Select year range
 year_min, year_max = st.sidebar.slider(
     "Select Year Range",
     min_value=2000,
@@ -62,48 +58,41 @@ year_min, year_max = st.sidebar.slider(
     step=1
 )
 
-# 3. Checkbox: Show data table
 show_table = st.sidebar.checkbox("Show dataset table", value=True)
 
-# 4. Radio: Choose chart type
 chart_type = st.sidebar.radio(
     "Choose chart type",
     ["Line Chart", "Area Chart"]
 )
 
-# 5. Multiselect: Highlight distros
 highlight_distros = st.sidebar.multiselect(
     "Highlight Distros (Optional)",
     ["Ubuntu", "Debian", "Fedora", "Arch", "Linux Mint"]
 )
 
-# --- Filter data by year ---
 df_percent_filtered = df_percent.loc[year_min:year_max]
 
-# --- Display Chart ---
-st.subheader("📈 Percentage Usage Trend")
+st.subheader("Percentage Usage Trend")
 if chart_type == "Line Chart":
     if distro == "All":
         st.line_chart(df_percent_filtered)
     else:
         st.line_chart(df_percent_filtered[[distro]])
-else:  # Area Chart
+else:  
     if distro == "All":
         st.area_chart(df_percent_filtered)
     else:
         st.area_chart(df_percent_filtered[[distro]])
 
-# --- Keep numeric index for slicing ---
-df_display = df_percent.copy()  # index stays as int
+df_display = df_percent.copy() 
 
-# --- Display Table ---
 if show_table:
-    st.subheader("📊 Dataset in Percentage")
+    st.subheader("Dataset in Percentage")
     if highlight_distros:
         st.dataframe(
             df_display.loc[year_min:year_max, highlight_distros]
             .round(2)
-            .rename_axis(index=str)  # convert index to string for display only
+            .rename_axis(index=str)  
         )
     else:
         st.dataframe(
@@ -112,7 +101,6 @@ if show_table:
             .rename_axis(index=str)
         )
 
-# --- About Distros Section ---
 st.subheader("About the Distributions")
 st.markdown("""
 - <span style='color:#ff4d00'><b>Ubuntu</b></span> - Beginner-friendly Linux distribution widely used for desktops and servers.
@@ -122,6 +110,5 @@ st.markdown("""
 - <span style='color:#00ff44'><b>Linux Mint</b></span> - Popular Ubuntu-based distro focused on ease of use and desktop stability.
 """, unsafe_allow_html=True)
 
-# --- Other UI components for demonstration ---
 st.caption("!Data is estimated for educational purposes only.!")
 st.caption("Christian Hebres - (c)2026")
