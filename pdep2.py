@@ -9,40 +9,8 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- LANDING PAGE ----------------
-page = st.sidebar.radio("Navigate", ["Home", "Dashboard"])
-
-if page == "Home":
-
-    st.title("🐧 Linux Distribution Usage Trends App")
-
-    st.image("https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png", width=150)
-
-    st.markdown("""
-    ### Welcome!
-
-    This **Streamlit Web App** visualizes the **usage trends of major Linux distributions from 2000–2026**.
-
-    It is designed for:
-    - 🎓 Students learning Linux
-    - 💻 Linux enthusiasts
-    - 📊 Researchers studying open-source adoption
-
-    Use the **Dashboard** page to explore interactive charts and datasets.
-    """)
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.metric("Total Distros", "5")
-    col2.metric("Years Covered", "27")
-    col3.metric("Data Type", "Usage %")
-
-    st.progress(60)
-
-    if st.button("Enter Dashboard"):
-        st.toast("Opening Dashboard 🚀")
-
-    st.info("Use the sidebar to navigate to the dashboard.")
+# ---------------- SIDEBAR NAVIGATION ----------------
+page = st.sidebar.radio("Navigation", ["Home", "Dashboard"])
 
 # ---------------- DATASET ----------------
 data = {
@@ -59,13 +27,90 @@ df.set_index("Year", inplace=True)
 
 df_percent = df.div(df.sum(axis=1), axis=0) * 100
 
+# =====================================================
+# ---------------- HOME / LANDING PAGE ----------------
+# =====================================================
+
+if page == "Home":
+
+    st.title("Linux Distribution Usage Trends")
+
+    st.markdown("""
+    ### Explore Linux popularity from **2000 to 2026**
+
+    This interactive web application visualizes how major Linux distributions
+    have evolved in popularity over time.""")
+
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
+        width=200
+    )
+
+    st.divider()
+
+    # ---- PROJECT STATS ----
+    st.subheader("Project Overview")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Linux Distros", "5")
+    col2.metric("Years Analyzed", "27")
+    col3.metric("Data Points", "135+")
+    col4.metric("Interactive Charts", "2")
+
+    st.divider()
+
+    # ---- FEATURES ----
+    st.subheader("Features")
+
+    f1, f2, f3 = st.columns(3)
+
+    with f1:
+        st.info("""
+        📈 **Interactive Charts**
+
+        View Linux distribution usage trends
+        using line charts or area charts.
+        """)
+
+    with f2:
+        st.success("""
+        🔍 **Custom Filters**
+
+        Select distributions and choose
+        specific year ranges to analyze.
+        """)
+
+    st.divider()
+
+    st.subheader("About the Distributions")
+
+    st.markdown("""
+    **Ubuntu** – Beginner-friendly Linux distribution widely used for desktops and servers.
+
+    **Debian** – One of the oldest and most stable Linux distributions.
+
+    **Fedora** – Cutting-edge Linux distribution sponsored by Red Hat.
+
+    **Arch Linux** – Minimalist distro known for customization and rolling releases.
+
+    **Linux Mint** – Ubuntu-based distro focused on ease of use and stability.
+    """)
+
+    st.warning("Data is estimated for educational purposes only.")
+
+    st.caption("Christian Hebres - Streamlit Project (2026)")
+
+# =====================================================
 # ---------------- DASHBOARD ----------------
+# =====================================================
+
 if page == "Dashboard":
 
     st.title("📊 Linux Distribution Usage Trends (2000–2026)")
 
-    # Sidebar inputs
-    st.sidebar.header("Filter Options")
+    # ---- SIDEBAR FILTERS ----
+    st.sidebar.subheader("Filter Options")
 
     distro = st.sidebar.selectbox(
         "Select Linux Distribution",
@@ -83,42 +128,28 @@ if page == "Dashboard":
         ["Line Chart", "Area Chart"]
     )
 
-    highlight = st.sidebar.multiselect(
-        "Highlight Distros",
-        ["Ubuntu", "Debian", "Fedora", "Arch", "Linux Mint"]
-    )
-
-    show_table = st.sidebar.toggle("Show Dataset Table", True)
-
-    theme_color = st.sidebar.color_picker("Pick Chart Color", "#ff4d00")
-
-    rows_to_show = st.sidebar.number_input(
-        "Rows to Display",
-        min_value=5,
-        max_value=27,
-        value=10
-    )
-
     selected_date = st.sidebar.date_input(
         "Select analysis date",
         datetime.date.today()
     )
 
-    # Filter data
+    # ---- FILTER DATA ----
     df_filtered = df_percent.loc[year_range[0]:year_range[1]]
 
-    # ---------------- TABS ----------------
-    tab1, tab2, tab3 = st.tabs(["📈 Chart", "📄 Data", "ℹ️ Info"])
+    # ---- TABS ----
+    tab1, tab2, tab3 = st.tabs(["📈 Chart", "📄 Data"])
 
-    # ----- CHART TAB -----
+    # =====================
+    # CHART TAB
+    # =====================
     with tab1:
 
         st.subheader("Usage Trend")
 
-        col1, col2 = st.columns(2)
+        c1, c2 = st.columns(2)
 
-        col1.metric("Start Year", year_range[0])
-        col2.metric("End Year", year_range[1])
+        c1.metric("Start Year", year_range[0])
+        c2.metric("End Year", year_range[1])
 
         if chart_type == "Line Chart":
             if distro == "All":
@@ -133,25 +164,27 @@ if page == "Dashboard":
 
         st.success("Chart updated successfully!")
 
-    # ----- DATA TAB -----
+    # =====================
+    # DATA TAB
+    # =====================
     with tab2:
 
         st.subheader("Dataset")
 
         df_display = df_percent.copy()
 
-        if highlight:
-            st.dataframe(
-                df_display.loc[year_range[0]:year_range[1], highlight]
-                .round(2)
-                .head(rows_to_show)
-            )
+        if distro != "All":
+                st.dataframe(
+                    df_display.loc[year_range[0]:year_range[1], [distro]]
+                    .round(2)
+                    .head()
+                )
         else:
-            st.dataframe(
-                df_display.loc[year_range[0]:year_range[1]]
-                .round(2)
-                .head(rows_to_show)
-            )
+                st.dataframe(
+                    df_display.loc[year_range[0]:year_range[1]]
+                    .round(2)
+                    .head()
+                )
 
         csv = df_display.to_csv().encode("utf-8")
 
@@ -161,24 +194,3 @@ if page == "Dashboard":
             "linux_distro_data.csv",
             "text/csv"
         )
-
-    # ----- INFO TAB -----
-    with tab3:
-
-        with st.expander("About the Distributions"):
-
-            st.markdown("""
-            **Ubuntu** – Beginner-friendly Linux distribution widely used for desktops and servers.
-
-            **Debian** – One of the oldest and most stable Linux distributions.
-
-            **Fedora** – Cutting-edge Linux distribution sponsored by Red Hat.
-
-            **Arch Linux** – Minimalist distro known for customization and rolling releases.
-
-            **Linux Mint** – Popular Ubuntu-based distro focused on ease of use.
-            """)
-
-        st.warning("Data is estimated for educational purposes only.")
-
-        st.caption("Christian Hebres - (c)2026")
