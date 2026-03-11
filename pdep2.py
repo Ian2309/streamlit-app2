@@ -2,17 +2,15 @@ import streamlit as st
 import pandas as pd
 import datetime
 
-# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Linux Distro Trends",
     page_icon="🐧",
     layout="wide"
 )
 
-# ---------------- SIDEBAR NAVIGATION ----------------
 page = st.sidebar.radio("Navigation", ["Home", "Dashboard"])
 
-# ---------------- DATASET ----------------
+#dataset
 data = {
     "Year": list(range(2000, 2027)),
     "Ubuntu": [0,0,0,0,5,10,15,20,25,28,30,32,34,35,36,38,39,40,41,42,43,44,45,46,47,48,49],
@@ -26,10 +24,6 @@ df = pd.DataFrame(data)
 df.set_index("Year", inplace=True)
 
 df_percent = df.div(df.sum(axis=1), axis=0) * 100
-
-# =====================================================
-# ---------------- HOME / LANDING PAGE ----------------
-# =====================================================
 
 if page == "Home":
 
@@ -48,7 +42,6 @@ if page == "Home":
 
     st.divider()
 
-    # ---- PROJECT STATS ----
     st.subheader("Project Overview")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -60,7 +53,6 @@ if page == "Home":
 
     st.divider()
 
-    # ---- FEATURES ----
     st.subheader("Features")
 
     f1, f2, f3 = st.columns(3)
@@ -86,30 +78,26 @@ if page == "Home":
     st.subheader("About the Distributions")
 
     st.markdown("""
-    **Ubuntu** – Beginner-friendly Linux distribution widely used for desktops and servers.
+    **Ubuntu** - Beginner-friendly Linux distribution widely used for desktops and servers.
 
-    **Debian** – One of the oldest and most stable Linux distributions.
+    **Debian** - One of the oldest and most stable Linux distributions.
 
-    **Fedora** – Cutting-edge Linux distribution sponsored by Red Hat.
+    **Fedora** - Cutting-edge Linux distribution sponsored by Red Hat.
 
-    **Arch Linux** – Minimalist distro known for customization and rolling releases.
+    **Arch Linux** - Minimalist distro known for customization and rolling releases.
 
-    **Linux Mint** – Ubuntu-based distro focused on ease of use and stability.
+    **Linux Mint** - Ubuntu-based distro focused on ease of use and stability.
     """)
 
     st.warning("Data is estimated for educational purposes only.")
 
     st.caption("Christian Hebres - Streamlit Project (2026)")
 
-# =====================================================
-# ---------------- DASHBOARD ----------------
-# =====================================================
-
 if page == "Dashboard":
 
-    st.title("📊 Linux Distribution Usage Trends (2000–2026)")
+    st.title("📊 Linux Distribution Usage Trends (2000-2026)")
 
-    # ---- SIDEBAR FILTERS ----
+    #sidebar components
     st.sidebar.subheader("Filter Options")
 
     distro = st.sidebar.selectbox(
@@ -133,21 +121,15 @@ if page == "Dashboard":
         datetime.date.today()
     )
 
-    # ---- FILTER DATA ----
     df_filtered = df_percent.loc[year_range[0]:year_range[1]]
 
-    # ---- TABS ----
-    tab1, tab2, tab3 = st.tabs(["📈 Chart", "📄 Data"])
+    #3 tabs
+    tab1, tab2, tab3 = st.tabs(["📈 Chart", "📄 Data", "ℹ️ Info"])
 
-    # =====================
-    # CHART TAB
-    # =====================
     with tab1:
-
         st.subheader("Usage Trend")
 
         c1, c2 = st.columns(2)
-
         c1.metric("Start Year", year_range[0])
         c2.metric("End Year", year_range[1])
 
@@ -164,33 +146,61 @@ if page == "Dashboard":
 
         st.success("Chart updated successfully!")
 
-    # =====================
-    # DATA TAB
-    # =====================
     with tab2:
-
         st.subheader("Dataset")
 
         df_display = df_percent.copy()
 
-        if distro != "All":
-                st.dataframe(
-                    df_display.loc[year_range[0]:year_range[1], [distro]]
-                    .round(2)
-                    .head()
-                )
+        selected_distros = st.multiselect(
+            "Select Linux Distributions to Display",
+            options=["Ubuntu", "Debian", "Fedora", "Arch", "Linux Mint"],
+            default=["Ubuntu", "Debian", "Fedora", "Arch", "Linux Mint"]
+        )
+
+        if selected_distros:
+            st.dataframe(
+                df_display.loc[year_range[0]:year_range[1], selected_distros].round(2)
+            )
         else:
-                st.dataframe(
-                    df_display.loc[year_range[0]:year_range[1]]
-                    .round(2)
-                    .head()
-                )
+            st.dataframe(
+                df_display.loc[year_range[0]:year_range[1]].round(2)
+            )
 
         csv = df_display.to_csv().encode("utf-8")
-
         st.download_button(
             "Download Dataset CSV",
             csv,
             "linux_distro_data.csv",
             "text/csv"
         )
+        
+    with tab3:
+        st.markdown("""This is the breakdown of Streamlit API Documentation used in my WEBAPP
+
+| #  | Component Names            | Description                        |
+
+| 1  | `st.set_page_config`       | Sets page title, icon, layout      |
+| 2  | `st.sidebar.radio`         | Navigation or chart type selection |
+| 3  | `st.sidebar.selectbox`     | Select Linux distribution          |
+| 4  | `st.sidebar.select_slider` | Year range filter                  |
+| 5  | `st.sidebar.date_input`    | Analysis date picker               |
+| 6  | `st.sidebar.subheader`     | Filter options header              |
+| 7  | `st.title`                 | Page titles                        |
+| 8  | `st.subheader`             | Section or tab headers             |
+| 9  | `st.markdown`              | Text content / descriptions        |
+| 10 | `st.image`                 | Display images                     |
+| 11 | `st.divider`               | Divider line                       |
+| 12 | `st.columns`               | Layout columns                     |
+| 13 | `st.metric`                | Metrics display (numeric stats)    |
+| 14 | `st.info`                  | Info card / feature highlight      |
+| 15 | `st.success`               | Success card / messages            |
+| 16 | `st.warning`               | Warning / disclaimer               |
+| 17 | `st.caption`               | Footer / author info               |
+| 18 | `st.tabs`                  | Tabs for Chart / Data / Info       |
+| 19 | `st.line_chart`            | Line chart visualization           |
+| 20 | `st.area_chart`            | Area chart visualization           |
+| 21 | `st.dataframe`             | Display DataFrame                  |
+| 22 | `st.download_button`       | Download CSV button                |
+
+Streamlit Project (CHRISTIAN B. HEBRES) 2026
+""")
